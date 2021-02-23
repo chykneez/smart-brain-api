@@ -68,19 +68,15 @@ app.get('/profile/:id', (req, res) => {
 
 app.put('/entry', (req, res) => {
   const { id } = req.body;
-  let userExists = false;
 
-  db.users.forEach((user) => {
-    if (user.id === id) {
-      userExists = true;
-      user.entries++;
-      return res.json(user.entries);
-    }
-  });
-
-  if (userExists) {
-    res.status(400).json('User does not exist!');
-  }
+  db('users')
+    .where('id', '=', id)
+    .increment('entries', 1)
+    .returning('entries ')
+    .then((entries) => res.json(entries[0]))
+    .catch((err) =>
+      res.status(400).json('Unable to retrieve your entry count.')
+    );
 });
 
 app.listen(3000, () => {
