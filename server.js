@@ -1,6 +1,8 @@
 const express = require('express');
+const parser = require('body-parser');
 
 const app = express();
+app.use(parser.json());
 
 // Testing
 const db = {
@@ -29,7 +31,14 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  res.json('Logging in');
+  if (
+    req.body.email === db.users[0].email &&
+    req.body.password === db.users[0].password
+  )
+    res.json('Success');
+  else {
+    res.status(400).json('Incorrect email or password!');
+  }
 });
 
 app.listen(3000, () => {
