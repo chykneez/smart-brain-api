@@ -1,9 +1,11 @@
 const express = require('express');
 const parser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
+const cors = require('cors');
 
 const app = express();
 app.use(parser.json());
+app.use(cors());
 
 // Testing
 const db = {
@@ -113,18 +115,6 @@ app.put('/entry', (req, res) => {
     res.status(400).json('User does not exist!');
   }
 });
-
-// bcrypt.hash('bacon', null, null, function (err, hash) {
-//   // Store hash in your password DB.
-// });
-
-// // Load hash from your password DB.
-// bcrypt.compare('bacon', hash, function (err, res) {
-//   // res == true
-// });
-// bcrypt.compare('veggies', hash, function (err, res) {
-//   // res = false
-// });
 
 app.listen(3000, () => {
   console.log('Listening on port 3000...');
