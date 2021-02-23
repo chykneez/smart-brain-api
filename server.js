@@ -25,21 +25,36 @@ app.get('/', (req, res) => {
 app.post('/register', (req, res) => {
   const { email, name, password } = req.body;
 
-  db('users')
-    .returning('*')
-    .insert({
-      name,
-      email,
-      createdAt: new Date(),
-    })
-    .then((user) => {
-      res.json(user[0]);
-    })
-    .catch((err) =>
-      res
-        .status(400)
-        .json('That email is already taken! Please use another one!')
-    );
+  const hash = bcrypt.hashSync(password);
+
+  db.transaction(trx => {
+    trx
+      .insert({
+        hash,
+        email,
+      })
+      .into('login')
+      .returning('email')
+      .then(loginEmail => {
+        return trx('users')
+          .returning('*')
+          .insert({
+            name,
+            email: loginEmail[0],
+            createdAt: new Date(),
+          })
+          .then(user => {
+            res.json(user[0]);
+          })
+          .then(trx.commit)
+          .catch(trx.rollback);
+      })
+      .catch(err =>
+        res
+          .status(400)
+          .json('That email is already taken! Please use another one!')
+      );
+  });
 });
 
 app.post('/login', (req, res) => {
@@ -59,11 +74,11 @@ app.get('/profile/:id', (req, res) => {
   db.select('*')
     .from('users')
     .where({ id })
-    .then((user) => {
+    .then(user => {
       if (user.length) res.json(user[0]);
       else res.status(400).json('User does not exist!');
     })
-    .catch((err) => res.status(400).json('User does not exist!'));
+    .catch(err => res.status(400).json('User does not exist!'));
 });
 
 app.put('/entry', (req, res) => {
@@ -73,10 +88,8 @@ app.put('/entry', (req, res) => {
     .where('id', '=', id)
     .increment('entries', 1)
     .returning('entries ')
-    .then((entries) => res.json(entries[0]))
-    .catch((err) =>
-      res.status(400).json('Unable to retrieve your entry count.')
-    );
+    .then(entries => res.json(entries[0]))
+    .catch(err => res.status(400).json('Unable to retrieve your entry count.'));
 });
 
 app.listen(3000, () => {
