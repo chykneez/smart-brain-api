@@ -14,6 +14,7 @@ const db = {
       id: '1',
       name: 'Patrick',
       email: 'patrick@gmail.com',
+      password: 'password',
       entries: 0,
       createdAt: new Date(),
     },
@@ -21,6 +22,7 @@ const db = {
       id: '2',
       name: 'Daniela',
       email: 'daniela@gmail.com',
+      password: 'password',
       entries: 0,
       createdAt: new Date(),
     },
@@ -49,7 +51,6 @@ app.post('/register', (req, res) => {
     id: '3',
     name,
     email,
-    password,
     entries: 0,
     createdAt: new Date(),
   });
@@ -58,21 +59,6 @@ app.post('/register', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  // Load hash from your password DB.
-  bcrypt.compare(
-    'password',
-    '$2a$10$vOCoNXI1lubq9eBcV3AoieRQqsimhn7JlvgqssqvGpFefoAB0EZAi',
-    function (err, res) {
-      console.log('first guess', res);
-    }
-  );
-  bcrypt.compare(
-    'veggies',
-    '$2a$10$vOCoNXI1lubq9eBcV3AoieRQqsimhn7JlvgqssqvGpFefoAB0EZAi',
-    function (err, res) {
-      console.log('second guess', res);
-    }
-  );
   if (
     req.body.email === db.users[0].email &&
     req.body.password === db.users[0].password
