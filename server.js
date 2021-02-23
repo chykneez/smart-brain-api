@@ -55,6 +55,22 @@ app.post('/login', (req, res) => {
   }
 });
 
+app.get('/profile/:id', (req, res) => {
+  const { id } = req.params;
+  let userExists = false;
+
+  db.users.forEach((user) => {
+    if (user.id === id) {
+      userExists = true;
+      return res.json(user);
+    }
+  });
+
+  if (!userExists) {
+    res.status(400).json('User does not exist!');
+  }
+});
+
 app.listen(3000, () => {
   console.log('Listening on port 3000...');
 });
