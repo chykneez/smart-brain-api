@@ -27,7 +27,21 @@ const db = {
 };
 
 app.get('/', (req, res) => {
-  res.send('This is working!');
+  res.send(db.users);
+});
+
+app.post('/register', (req, res) => {
+  const { email, name, password } = req.body;
+  db.users.push({
+    id: '3',
+    name,
+    email,
+    password,
+    entries: 0,
+    createdAt: new Date(),
+  });
+
+  res.json(db.users[db.users.length - 1]);
 });
 
 app.post('/login', (req, res) => {
