@@ -14,12 +14,6 @@ const db = knex({
   },
 });
 
-db.select('*')
-  .from('users')
-  .then((data) => {
-    console.log(data);
-  });
-
 const app = express();
 app.use(parser.json());
 app.use(cors());
@@ -61,18 +55,15 @@ app.post('/login', (req, res) => {
 
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
-  let userExists = false;
 
-  db.users.forEach((user) => {
-    if (user.id === id) {
-      userExists = true;
-      return res.json(user);
-    }
-  });
-
-  if (userExists) {
-    res.status(400).json('User does not exist!');
-  }
+  db.select('*')
+    .from('users')
+    .where({ id })
+    .then((user) => {
+      if (user.length) res.json(user[0]);
+      else res.status(400).json('User does not exist!');
+    })
+    .catch((err) => res.status(400).json('User does not exist!'));
 });
 
 app.put('/entry', (req, res) => {
