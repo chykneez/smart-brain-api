@@ -63,7 +63,7 @@ app.post('/login', (req, res) => {
     req.body.email === db.users[0].email &&
     req.body.password === db.users[0].password
   )
-    res.json('Success');
+    res.json(db.users[0]);
   else {
     res.status(400).json('Incorrect email or password!');
   }
@@ -80,7 +80,7 @@ app.get('/profile/:id', (req, res) => {
     }
   });
 
-  if (!userExists) {
+  if (userExists) {
     res.status(400).json('User does not exist!');
   }
 });
@@ -97,7 +97,7 @@ app.put('/entry', (req, res) => {
     }
   });
 
-  if (!userExists) {
+  if (userExists) {
     res.status(400).json('User does not exist!');
   }
 });
