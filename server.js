@@ -2,39 +2,23 @@ const express = require('express');
 const parser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
+const knex = require('knex');
+
+const db = knex({
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    user: 'pvtrk',
+    password: '',
+    database: 'smart-brain',
+  },
+});
+
+console.log(db.select('*').from('users'));
 
 const app = express();
 app.use(parser.json());
 app.use(cors());
-
-// Testing
-const db = {
-  users: [
-    {
-      id: '1',
-      name: 'Patrick',
-      email: 'patrick@gmail.com',
-      password: 'password',
-      entries: 0,
-      createdAt: new Date(),
-    },
-    {
-      id: '2',
-      name: 'Daniela',
-      email: 'daniela@gmail.com',
-      password: 'password',
-      entries: 0,
-      createdAt: new Date(),
-    },
-  ],
-  login: [
-    {
-      id: '1',
-      hash: '',
-      email: 'patrick@gmail.com',
-    },
-  ],
-};
 
 app.get('/', (req, res) => {
   res.send(db.users);
