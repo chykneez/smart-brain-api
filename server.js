@@ -14,7 +14,11 @@ const db = knex({
   },
 });
 
-console.log(db.select('*').from('users'));
+db.select('*')
+  .from('users')
+  .then((data) => {
+    console.log(data);
+  });
 
 const app = express();
 app.use(parser.json());
@@ -27,17 +31,13 @@ app.get('/', (req, res) => {
 app.post('/register', (req, res) => {
   const { email, name, password } = req.body;
 
-  bcrypt.hash(password, null, null, function (err, hash) {
-    console.log(hash);
-  });
-
-  db.users.push({
-    id: '3',
-    name,
-    email,
-    entries: 0,
-    createdAt: new Date(),
-  });
+  db('users')
+    .insert({
+      name,
+      email,
+      createdAt: new Date(),
+    })
+    .then(console.log);
 
   res.json(db.users[db.users.length - 1]);
 });
