@@ -24,7 +24,7 @@ app.use(parser.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send(db.users);
+  res.send('App is working!');
 });
 
 app.post('/register', (req, res) => {
