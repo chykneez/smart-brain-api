@@ -9,6 +9,8 @@ const login = require('./controllers/login');
 const profile = require('./controllers/profile');
 const entry = require('./controllers/entry');
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+
 const db = knex({
   client: 'pg',
   connection: {
