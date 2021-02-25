@@ -7,6 +7,7 @@ const knex = require('knex');
 const register = require('./controllers/register');
 const login = require('./controllers/login');
 const profile = require('./controllers/profile');
+const entry = require('./controllers/entry');
 
 const db = knex({
   client: 'pg',
@@ -39,14 +40,7 @@ app.get('/profile/:id', (req, res) => {
 });
 
 app.put('/entry', (req, res) => {
-  const { id } = req.body;
-
-  db('users')
-    .where('id', '=', id)
-    .increment('entries', 1)
-    .returning('entries ')
-    .then(entries => res.json(entries[0]))
-    .catch(err => res.status(400).json('Unable to retrieve your entry count.'));
+  entry.handleEntry(req, res, db);
 });
 
 app.listen(3000, () => {
